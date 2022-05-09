@@ -1,35 +1,38 @@
-# zettle
+# Zettle POS SDK for Flutter
 
-A new flutter plugin project.
+[![pub package](https://img.shields.io/pub/v/zettle.svg)](https://pub.dev/packages/zettle) [![likes](https://badges.bar/zettle/likes)](https://pub.dev/packages/zettle/score) [![popularity](https://badges.bar/zettle/popularity)](https://pub.dev/packages/zettle/score)  [![pub points](https://badges.bar/zettle/pub%20points)](https://pub.dev/packages/zettle/score)
 
-## Getting Started
+A Flutter wrapper to use the Zettle POS SDK.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+With this plugin, your app can easily request payment via the Zettle readers on Android and iOS.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Prerequisites
 
+1) Registered for a Zettle developer account via [Zettle](https://developer.zettle.com/).
+2) Deployment Target iOS 12.0 or higher.
+3) Android minSdkVersion 21 or higher.
 
+## Android
 
-add to gradle.properties
+Add your personal access token to gradle.properties (as per https://github.com/iZettle/sdk-android), this is used to access the Zettle maven repo on github
 
+```
 zettle.githubAccessToken=""
+```
 
-add to build.gradle
+Add to build.gradle (as per https://github.com/iZettle/sdk-android)
 
+```
 android {
     packagingOptions {
         exclude 'META-INF/*.kotlin_module'
     }
 }
+```
 
+Add to manifest (as per https://github.com/iZettle/sdk-android)
 
-add to manifest
-
+```
 <activity
     android:name="com.izettle.android.auth.OAuthActivity"
     android:launchMode="singleTask"
@@ -43,24 +46,24 @@ add to manifest
         <category android:name="android.intent.category.BROWSABLE" />
     </intent-filter>
 </activity>
+```
 
 
 
+## iOS
 
+Add reader protocol to info.plist (https://github.com/iZettle/sdk-ios)
 
-ios:
-
-add
-
+```
 <key>UISupportedExternalAccessoryProtocols</key>
 <array>
     <string>com.izettle.cardreader-one</string>
 </array>
+```
 
+Add elements to info.plist (https://github.com/iZettle/sdk-ios)
 
-
-
-
+```
 <key>UIBackgroundModes</key>
 <array>
     <string>bluetooth-central</string>
@@ -85,7 +88,52 @@ add
     </dict>
 </array>
 
-
-
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>You need to allow this to be able to accept card payments</string>
+```
+
+
+## Installing
+
+Add zettle to your pubspec.yaml:
+
+```yaml
+dependencies:
+  zettle:
+```
+
+Import zettle:
+
+```dart
+import 'package:zettle/zettle.dart';
+```
+
+## Getting Started
+
+Init Zettle SDK:
+
+```dart
+Zettle.init(iosClientId, androidClientId, redirectUrl);
+```
+
+Complete a transaction:
+
+```dart
+var request = ZettlePaymentRequest(
+        amount: 100,
+        reference: reference,
+        enableLogin: true,
+        enableTipping: false,
+        enableInstalments: false);
+;
+Zettle.requestPayment(request);
+```
+
+## Available APIs
+
+```dart
+Zettle.init(iosClientId, androidClientId, redirectUrl);
+
+Zettle.requestPayment(request);
+Zettle.requestRefund(request);
+```

@@ -25,8 +25,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   _init() async {
-    var test = await Zettle.init("e5c2eb9b-bdda-4f56-bc95-d4dbd8d5fa52",
-        "23100b9c-212b-4537-903b-80b2299769f0", "ovatu-next://login.callback");
+    var test = await Zettle.init("ios", "android", "test://login.callback");
 
     setState(() {
       _message = 'init $test';
