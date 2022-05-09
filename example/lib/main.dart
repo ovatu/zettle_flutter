@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:zettle/zettle.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,33 +17,35 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String? _message;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await Zettle.platformVersion ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+  _init() async {
+    var test = await Zettle.init("e5c2eb9b-bdda-4f56-bc95-d4dbd8d5fa52",
+        "23100b9c-212b-4537-903b-80b2299769f0", "ovatu-next://login.callback");
 
     setState(() {
-      _platformVersion = platformVersion;
+      _message = 'init $test';
+    });
+  }
+
+  _payment() async {
+    var uuid = const Uuid();
+    var reference = uuid.v4();
+
+    var test = await Zettle.requestPayment(ZettlePaymentRequest(
+        amount: 100,
+        reference: reference,
+        enableLogin: true,
+        enableTipping: false,
+        enableInstalments: false));
+
+    setState(() {
+      _message = '_payment $test';
     });
   }
 
@@ -53,9 +56,11 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
+        body: Column(children: [
+          TextButton(child: Text('init'), onPressed: () => _init()),
+          TextButton(child: Text('payment'), onPressed: () => _payment()),
+          Text(_message ?? 'no message'),
+        ]),
       ),
     );
   }
