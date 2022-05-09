@@ -48,7 +48,8 @@ Add to manifest (as per https://github.com/iZettle/sdk-android)
 <activity
     android:name="com.izettle.android.auth.OAuthActivity"
     android:launchMode="singleTask"
-    android:taskAffinity="@string/oauth_activity_task_affinity">
+    android:taskAffinity="@string/oauth_activity_task_affinity"
+    android:exported="true">
     <intent-filter>
         <data
             android:host="[redirect url host]"
