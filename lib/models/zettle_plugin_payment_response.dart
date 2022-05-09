@@ -1,7 +1,3 @@
-import 'dart:io';
-
-// TODO add products field
-
 enum ZettlePluginPaymentStatus { completed, canceled, failed }
 
 /// Payment response object.

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 enum ZettlePluginRefundStatus { completed, canceled, failed }
 
 /// Refund response object.

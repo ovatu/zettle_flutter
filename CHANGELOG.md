@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Keep the static analyser happy
+
 ## 0.2.0
 
 * Gradle updates for github maven authentication
