@@ -4,9 +4,6 @@ version '1.0-SNAPSHOT'
 buildscript {
     ext.kotlin_version = '1.6.10'
 
-    ext.zettle = [:]
-    ext.zettle.githubAccessToken = ""
-
     repositories {
         google()
         mavenCentral()
@@ -22,16 +19,6 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.github.com/iZettle/sdk-android")
-            credentials(HttpHeaderCredentials) {
-                name "Authorization"
-                value "Bearer ${zettle.githubAccessToken}"
-            }
-            authentication {
-                header(HttpHeaderAuthentication)
-            }
-        }
     }
 }
 
