@@ -14,18 +14,30 @@ With this plugin, your app can easily request payment via the Zettle readers on 
 
 ## Android
 
-Add your personal access token to gradle.properties (as per https://github.com/iZettle/sdk-android), this is used to access the Zettle maven repo on github
-
-```
-zettle.githubAccessToken=""
-```
-
 Add to build.gradle (as per https://github.com/iZettle/sdk-android)
+Add your personal access token to build.gradle (as per https://github.com/iZettle/sdk-android), this is used to access the Zettle maven repo on github
 
 ```
 android {
     packagingOptions {
         exclude 'META-INF/*.kotlin_module'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/iZettle/sdk-android")
+            credentials(HttpHeaderCredentials) {
+                name "Authorization"
+                value "Bearer <YOUR TOKEN HERE>"
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
     }
 }
 ```
