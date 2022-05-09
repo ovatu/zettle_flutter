@@ -1,6 +1,6 @@
 name: zettle
 description: A wrapper for the Zettle POS SDK for Android and iOS.
-version: 0.1.1
+version: 0.2.0
 repository: https://github.com/ovatu/zettle_flutter
 homepage: https://ovatu.com/us
 
