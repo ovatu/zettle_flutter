@@ -6,6 +6,13 @@ A Flutter wrapper to use the Zettle POS SDK.
 
 With this plugin, your app can easily request payment via the Zettle readers on Android and iOS.
 
+## Note ⚠️
+You Must Call the init function Only once a time in your app
+
+```dart
+Zettle.init(iosClientId, androidClientId, redirectUrl);
+```
+
 ## Prerequisites
 
 1) Registered for a Zettle developer account via [Zettle](https://developer.zettle.com/).
@@ -138,7 +145,7 @@ var request = ZettlePaymentRequest(
         enableLogin: true,
         enableTipping: false,
         enableInstalments: false);
-;
+        
 Zettle.requestPayment(request);
 ```
 
