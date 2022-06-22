@@ -1,3 +1,7 @@
+## 0.2.2
+
+* Throw dart exception if already initialised to prevent it being thrown in native code.
+
 ## 0.2.1
 
 * Keep the static analyser happy
