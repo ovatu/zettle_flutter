@@ -154,6 +154,8 @@ Zettle.requestPayment(request);
 ```dart
 Zettle.init(iosClientId, androidClientId, redirectUrl);
 
+bool Zettle.isInitialized;
+
 Zettle.requestPayment(request);
 Zettle.requestRefund(request);
 ```
