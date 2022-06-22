@@ -31,6 +31,11 @@ class Zettle {
   /// Must be called before anything else
   static Future<ZettlePluginResponse> init(
       String iosClientId, String androidClientId, String redirectUrl) async {
+    if (_isInitialized) {
+      throw Exception(
+          'Zettle SDK is already initialized. You should only call Zettle.init() once');
+    }
+
     final method = await _channel.invokeMethod('init', {
       'iosClientId': iosClientId,
       'androidClientId': androidClientId,
