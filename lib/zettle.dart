@@ -26,6 +26,8 @@ class Zettle {
     }
   }
 
+  static bool get isInitialized => _isInitialized;
+
   /// Initializes Zettle SDK with your [affiliateKey].
   ///
   /// Must be called before anything else
