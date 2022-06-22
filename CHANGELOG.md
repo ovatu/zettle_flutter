@@ -1,3 +1,7 @@
+## 0.2.3
+
+* Expose isInitialized property to check if the SDK is already initialized.
+
 ## 0.2.2
 
 * Throw dart exception if already initialised to prevent it being thrown in native code.
