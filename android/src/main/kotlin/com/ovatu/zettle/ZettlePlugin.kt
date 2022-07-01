@@ -38,6 +38,8 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
   private lateinit var channel : MethodChannel
   private lateinit var activity: Activity
 
+  private var sdkStarted: bool = false
+
   private var operations: MutableMap<String, ZettlePluginResponseWrapper> = mutableMapOf()
   private lateinit var currentOperation: ZettlePluginResponseWrapper
 
@@ -68,8 +70,10 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
 
   override fun onDetachedFromActivity() {
     Log.d(tag, "onDetachedFromActivity")
-    IZettleSDK.stop()
-    //IZettleSDK.user.state.removeObserver(authObserver)
+    if (sdkStarted) {
+      IZettleSDK.stop()
+      //IZettleSDK.user.state.removeObserver(authObserver)
+    }
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -150,6 +154,8 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
       IZettleSDK.init(activity, clientID, redirect)
       IZettleSDK.start()
       //IZettleSDK.user.state.addObserver(authObserver)
+
+      sdkStarted = true
 
       currentOp.response.message = mutableMapOf("initialized" to true)
       currentOp.response.status = true
