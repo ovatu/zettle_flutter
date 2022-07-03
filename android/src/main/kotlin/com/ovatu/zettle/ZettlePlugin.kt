@@ -96,7 +96,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
       //"loginWithToken" -> loginWithToken(call.arguments as String)
       "requestPayment" -> requestPayment(call.arguments as Map<*, *>)
       "requestRefund" -> requestRefund(call.arguments as Map<*, *>)
-      "showSettings" -> showSettings().flutterResult()
+      "showSettings" -> showSettings()
       else -> result.notImplemented()
     }
   }
