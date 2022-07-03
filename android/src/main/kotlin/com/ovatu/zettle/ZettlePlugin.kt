@@ -268,7 +268,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
     val currentOp: ZettlePluginResponseWrapper? = when (ZettleTask.valueOf(requestCode)) {
       ZettleTask.REQUEST_PAYMENT -> operations["requestPayment"]
       ZettleTask.REQUEST_REFUND -> operations["requestRefund"]
-      else -> currentOperation
+      else -> null
     }
 
     Log.d(tag, "onActivityResult - cuurent op: $currentOp")
