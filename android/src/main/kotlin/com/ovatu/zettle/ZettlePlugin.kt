@@ -41,7 +41,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
   private var sdkStarted: Boolean = false
 
   private var operations: MutableMap<String, ZettlePluginResponseWrapper> = mutableMapOf()
-  private lateinit var currentOperation: ZettlePluginResponseWrapper
+  private var currentOperation: ZettlePluginResponseWrapper?
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     Log.d(tag, "onAttachedToEngine")
