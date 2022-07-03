@@ -38,7 +38,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
   private lateinit var channel : MethodChannel
   private lateinit var activity: Activity
 
-  private var sdkStarted: bool = false
+  private var sdkStarted: Boolean = false
 
   private var operations: MutableMap<String, ZettlePluginResponseWrapper> = mutableMapOf()
   private lateinit var currentOperation: ZettlePluginResponseWrapper
