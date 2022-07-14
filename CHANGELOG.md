@@ -1,3 +1,7 @@
+## 0.2.4
+
+* SDK update
+
 ## 0.2.3
 
 * Expose isInitialized property to check if the SDK is already initialized.
