@@ -7,8 +7,8 @@ class ZettlePaymentRequest {
       this.enableTipping = true,
       this.enableInstalments = true});
 
-  /// Total refund amount.
-  int amount;
+  /// Total payment amount.
+  double amount;
 
   /// An identifier associated with the transaction that can be used to retrieve details related to the transaction.
   String reference;

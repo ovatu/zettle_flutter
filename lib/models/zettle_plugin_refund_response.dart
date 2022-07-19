@@ -36,8 +36,8 @@ class ZettlePluginRefundResponse {
   /// Transaction's outcome
   late ZettlePluginRefundStatus status;
 
-  late int? originalAmount;
-  late int? refundedAmount;
+  late double? originalAmount;
+  late double? refundedAmount;
   late String? cardType;
   late String? maskedPan;
   late String? cardPaymentUUID;

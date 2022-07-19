@@ -53,9 +53,6 @@ public class SwiftZettlePlugin: NSObject, FlutterPlugin {
         let clientID = options["iosClientId"] as! String
         let callbackURL = options["redirect"] as! String
         
-        print(clientID)
-        print(callbackURL)
-
         do {
             let authenticationProvider = try iZettleSDKAuthorization(
                 clientID: clientID,
@@ -72,7 +69,7 @@ public class SwiftZettlePlugin: NSObject, FlutterPlugin {
     func _requestPayment(_ payment: [String:Any], completion: @escaping ((Bool, [String:Any?]) -> Void)) {
         let enableTipping = (payment["enableTipping"] as? Bool) ?? true
         let reference = payment["reference"] as! String
-        let amount = NSDecimalNumber(decimal: Decimal(sign: .plus, exponent: -2, significand: Decimal(payment["amount"] as! Int)))
+        let amount = NSDecimalNumber(value: payment["amount"] as! Double)
         
         iZettleSDK.shared().charge(amount: amount, enableTipping: enableTipping, reference: reference, presentFrom: topController()) { payment, error in
             
@@ -113,7 +110,7 @@ public class SwiftZettlePlugin: NSObject, FlutterPlugin {
     func _requestRefund(_ refund: [String:Any], completion: @escaping ((Bool, [String:Any?]) -> Void)) {
         let reference = refund["reference"] as! String
         let receiptNumber = refund["receiptNumber"] as? String
-        let refundAmount = NSDecimalNumber(decimal: Decimal(sign: .plus, exponent: -2, significand: Decimal(refund["refundAmount"] as! Int)))
+        let refundAmount = NSDecimalNumber(value: refund["refundAmount"] as! Double)
 
         iZettleSDK.shared().refund(amount: refundAmount, ofPayment: reference, withRefundReference: receiptNumber, presentFrom: topController()) { payment, error in
             if (error != nil) {

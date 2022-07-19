@@ -8,10 +8,10 @@ class ZettleRefundRequest {
   });
 
   /// Total refund amount.
-  int? refundAmount;
+  double? refundAmount;
 
   /// Total refund amount.
-  int? taxAmount;
+  double? taxAmount;
 
   /// An identifier associated with the transaction that can be used to retrieve details related to the transaction.
   String reference;

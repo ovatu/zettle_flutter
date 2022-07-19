@@ -216,7 +216,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
     val reference = TransactionReference.Builder(internalUniqueTraceId).build()
 
     val intent = CardPaymentActivity.IntentBuilder(activity)
-            .amount((args["amount"] as Int).toLong())
+            .amount((((args["amount"] as Double) * 100).toInt()).toLong())
             .reference(reference)
             .enableLogin(args["enableLogin"] as Boolean? ?: true)
             .enableTipping(args["enableTipping"] as Boolean? ?: true)
@@ -236,10 +236,10 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
             .reference(reference)
 
     if (args["refundAmount"] != null) {
-      intentBuilder.refundAmount((args["refundAmount"] as Int).toLong())
+      intentBuilder.refundAmount((((args["refundAmount"] as Double) * 100).toInt()).toLong())
     }
     if (args["taxAmount"] != null) {
-      intentBuilder.taxAmount((args["taxAmount"] as Int).toLong())
+      intentBuilder.taxAmount((((args["taxAmount"] as Double) * 100).toInt()).toLong())
     }
     if (args["receiptNumber"] != null) {
       intentBuilder.receiptNumber(args["receiptNumber"] as String)
