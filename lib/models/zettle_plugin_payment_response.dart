@@ -60,7 +60,7 @@ class ZettlePluginPaymentResponse {
   }
 
   late ZettlePluginPaymentStatus status;
-  late double? amount;
+  late int? amount;
   late double? gratuityAmount;
   late String? cardType;
   late String? cardPaymentEntryMode;
@@ -73,8 +73,8 @@ class ZettlePluginPaymentResponse {
   late String? panHash;
   late String? applicationName;
   late String? authorizationCode;
-  late String? installmentAmount;
-  late String? nrOfInstallments;
+  late int? installmentAmount;
+  late int? nrOfInstallments;
   late String? mxFiid;
   late String? mxCardType;
   late String? reference;
