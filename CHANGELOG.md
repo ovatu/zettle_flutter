@@ -1,3 +1,11 @@
+## 0.2.6
+
+* Fix failing refund issue resulted from outdated RefundActivity intent builder implementation
+
+## 0.2.5
+
+* Fix payment result amount and instalment mismatch types
+
 ## 0.2.4
 
 * SDK update

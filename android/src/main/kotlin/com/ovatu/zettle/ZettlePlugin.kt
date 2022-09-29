@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 import com.izettle.android.commons.state.StateObserver
 import com.izettle.payments.android.payment.TransactionReference
 import com.izettle.payments.android.payment.refunds.RefundFailureReason
+import com.izettle.payments.android.payment.refunds.RetrieveCardPaymentFailureReason
 import com.izettle.payments.android.sdk.IZettleSDK
 import com.izettle.payments.android.sdk.User
 import com.izettle.payments.android.ui.payment.CardPaymentActivity
@@ -16,6 +17,9 @@ import com.izettle.payments.android.ui.payment.FailureReason
 import com.izettle.payments.android.ui.readers.CardReadersActivity
 import com.izettle.payments.android.ui.refunds.RefundResult
 import com.izettle.payments.android.ui.refunds.RefundsActivity
+import com.izettle.payments.android.payment.refunds.CardPaymentPayload
+import com.izettle.payments.android.payment.refunds.RefundsManager
+import com.izettle.payments.android.sdk.IZettleSDK.Instance.refundsManager
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -230,25 +234,24 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
     Log.d(tag, "requestRefund: $args")
 
     val internalUniqueTraceId = args["reference"] as String
-    val reference = TransactionReference.Builder(internalUniqueTraceId).build()
+    refundsManager.retrieveCardPayment(internalUniqueTraceId, RefundCallback(activity))
+  }
 
-    val intentBuilder = RefundsActivity.IntentBuilder(activity)
-            .reference(reference)
+  private inner class RefundCallback(activity: Activity) :
+          RefundsManager.Callback<CardPaymentPayload, RetrieveCardPaymentFailureReason> {
 
-    if (args["refundAmount"] != null) {
-      intentBuilder.refundAmount((((args["refundAmount"] as Double) * 100).toInt()).toLong())
-    }
-    if (args["taxAmount"] != null) {
-      intentBuilder.taxAmount((((args["taxAmount"] as Double) * 100).toInt()).toLong())
-    }
-    if (args["receiptNumber"] != null) {
-      intentBuilder.receiptNumber(args["receiptNumber"] as String)
+    override fun onFailure(reason: RetrieveCardPaymentFailureReason) {
     }
 
-    val intent = intentBuilder.build()
-
-    // Start activity with the intent
-    startActivityForResult(activity, intent, ZettleTask.REQUEST_REFUND.code, null)
+    override fun onSuccess(payload: CardPaymentPayload) {
+      val reference = TransactionReference.Builder(UUID.randomUUID().toString())
+              .build()
+      val intent = RefundsActivity.IntentBuilder(activity)
+              .cardPayment(payload)
+              .reference(reference)
+              .build()
+      startActivityForResult(activity, intent, ZettleTask.REQUEST_REFUND.code, null)
+    }
   }
 
   private fun showSettings(): ZettlePluginResponseWrapper {
@@ -331,7 +334,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
         ZettleTask.REQUEST_REFUND -> {
 
           when (val paymentResult: RefundResult? =
-                  data.getParcelableExtra(CardPaymentActivity.RESULT_EXTRA_PAYLOAD)) {
+                  data.getParcelableExtra(RefundsActivity.RESULT_EXTRA_PAYLOAD)) {
             is RefundResult.Completed -> {
               currentOp.response.status = true
               currentOp.response.message = mutableMapOf(
