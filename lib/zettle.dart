@@ -34,8 +34,7 @@ class Zettle {
   static Future<ZettlePluginResponse> init(
       String iosClientId, String androidClientId, String redirectUrl) async {
     if (_isInitialized) {
-      throw Exception(
-          'Zettle SDK is already initialized. You should only call Zettle.init() once');
+      throw Exception('Zettle SDK is already initialized. You should only call Zettle.init() once');
     }
 
     final method = await _channel.invokeMethod('init', {
@@ -48,6 +47,27 @@ class Zettle {
       _isInitialized = true;
     }
     return response;
+  }
+
+  /// Enquire if user is still logged in
+  static Future<ZettlePluginResponse> loggedIn() async {
+    _throwIfNotInitialized();
+    final method = await _channel.invokeMethod('loggedIn');
+    return ZettlePluginResponse.fromMap(method);
+  }
+
+  /// Starts a login process
+  static Future<ZettlePluginResponse> login() async {
+    _throwIfNotInitialized();
+    final method = await _channel.invokeMethod('login');
+    return ZettlePluginResponse.fromMap(method);
+  }
+
+  /// Starts a logout process
+  static Future<ZettlePluginResponse> logout() async {
+    _throwIfNotInitialized();
+    final method = await _channel.invokeMethod('logout');
+    return ZettlePluginResponse.fromMap(method);
   }
 
   /// Starts a payment process with [paymentRequest].

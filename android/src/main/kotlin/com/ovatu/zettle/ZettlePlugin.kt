@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.lifecycle.Observer
 import com.izettle.android.commons.state.StateObserver
 import com.izettle.payments.android.payment.TransactionReference
 import com.izettle.payments.android.payment.refunds.RefundFailureReason
@@ -20,7 +21,10 @@ import com.izettle.payments.android.ui.refunds.RefundsActivity
 import com.izettle.payments.android.payment.refunds.CardPaymentPayload
 import com.izettle.payments.android.payment.refunds.RefundsManager
 import com.izettle.payments.android.sdk.IZettleSDK.Instance.refundsManager
+import com.izettle.payments.android.sdk.User.AuthState.LoggedIn
+import com.izettle.android.commons.ext.state.toLiveData
 
+import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -40,7 +44,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
-  private lateinit var activity: Activity
+  private lateinit var activity: FlutterActivity
 
   private var sdkStarted: Boolean = false
 
@@ -60,7 +64,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     Log.d(tag, "onAttachedToActivity")
-    activity = binding.activity
+    activity = binding.activity as FlutterActivity
     binding.addActivityResultListener(this)
   }
 
@@ -76,7 +80,6 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
     Log.d(tag, "onDetachedFromActivity")
     if (sdkStarted) {
       IZettleSDK.stop()
-      //IZettleSDK.user.state.removeObserver(authObserver)
     }
   }
 
@@ -94,10 +97,9 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
 
     when (call.method) {
       "init" -> init(call.arguments as Map<*, *>).flutterResult()
-      //"loggedIn" -> loggedIn().flutterResult()
-      //"info" -> info().flutterResult()
-      //"login" -> login()
-      //"loginWithToken" -> loginWithToken(call.arguments as String)
+      "login" -> login()
+      "logout" -> logout()
+      "loggedIn" -> loggedIn().flutterResult()
       "requestPayment" -> requestPayment(call.arguments as Map<*, *>)
       "requestRefund" -> requestRefund(call.arguments as Map<*, *>)
       "showSettings" -> showSettings()
@@ -108,46 +110,21 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
   var loggedIn = false
   var info: User.Info? = null
 
-  fun loginChange() {
-    var currentOp: ZettlePluginResponseWrapper? = null
-    if (operations["login"] != null) {
-      currentOp = operations["login"]
-    } else if (operations["loginWithToken"] != null) {
-      currentOp = operations["loginWithToken"]
-    }
-
-    if (currentOp != null) {
-      currentOp.response.status = loggedIn
-      currentOp.response.message = mutableMapOf(
-              "loggedIn" to loggedIn
-      )
-
-      currentOp.flutterResult()
-      operations.remove(currentOp.response.methodName)
+  private val authObserver = Observer<User.AuthState> {
+    when (it) {
+      is User.AuthState.LoggedIn -> { // User authorized
+        loggedIn = true
+        info = it.info
+        loginChange()
+      }
+      is User.AuthState.LoggedOut -> { // There is no authorized use
+        loggedIn = false
+        info = null
+        loginChange()
+      }
+      else -> {}
     }
   }
-
-  /*private val authObserver = object : StateObserver<User.AuthState> {
-    override fun onNext(state: User.AuthState) {
-      Log.d(tag, "authObserver.onNext: $state")
-
-      channel.invokeMethod("userStateDidChange", null)
-
-      when (state) {
-        is User.AuthState.LoggedIn -> { // User authorized
-          loggedIn = true
-          info = state.info
-          loginChange()
-        }
-        is User.AuthState.LoggedOut -> { // There is no authorized use
-          loggedIn = false
-          info = null
-          loginChange()
-        }
-        else -> {}
-      }
-    }
-  }*/
 
   private fun init(@NonNull args: Map<*, *>): ZettlePluginResponseWrapper {
     val currentOp = operations["init"]!!
@@ -157,7 +134,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
 
       IZettleSDK.init(activity, clientID, redirect)
       IZettleSDK.start()
-      //IZettleSDK.user.state.addObserver(authObserver)
+      IZettleSDK.user.state.toLiveData().observe(activity, authObserver)
 
       sdkStarted = true
 
@@ -170,9 +147,37 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
     return currentOp
   }
 
-  /*private fun loggedIn(): ZettlePluginResponseWrapper {
-    val currentOp = operations["loggedIn"]!!
+  private fun login() {
+    Log.d(tag, "login")
+    IZettleSDK.user.login(activity)
+  }
 
+  private fun logout() {
+    Log.d(tag, "logout")
+    IZettleSDK.user.logout()
+  }
+
+  private fun loginChange() {
+    Log.d(tag, "loginChange")
+    var currentOp: ZettlePluginResponseWrapper? = null
+    if (operations["login"] != null) {
+      currentOp = operations["login"]
+    } else if (operations["logout"] != null) {
+      currentOp = operations["logout"]
+    }
+
+    if (currentOp != null) {
+      currentOp.response.status = loggedIn
+      currentOp.response.message = mutableMapOf("loggedIn" to loggedIn)
+      currentOp.flutterResult()
+      operations.remove(currentOp.response.methodName)
+    }
+    Log.d(tag, "currentOp: $currentOp")
+  }
+
+  private fun loggedIn(): ZettlePluginResponseWrapper {
+    Log.d(tag, "loggedIn")
+    val currentOp = operations["loggedIn"]!!
     try {
       currentOp.response.status = loggedIn
       currentOp.response.message = mutableMapOf("loggedIn" to loggedIn)
@@ -181,37 +186,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
       currentOp.response.status = false
     }
     return currentOp
-  }*/
-
-  /*private fun info(): ZettlePluginResponseWrapper {
-    val currentOp = operations["info"]!!
-    try {
-      currentOp.response.status = true
-      currentOp.response.message = mutableMapOf(
-              "organizationId" to info?.organizationId,
-              "country" to info?.country.toString(),
-              "publicName" to info?.publicName,
-              "userId" to info?.userId,
-              "imageUrl" to info?.imageUrl?.small,
-              "timeZone" to info?.timeZone.toString(),
-              "currency" to info?.currency.toString()
-      )
-    } catch (e: Exception) {
-      currentOp.response.message = mutableMapOf("errors" to e.message)
-      currentOp.response.status = false
-    }
-    return currentOp
-  }*/
-
-  /*private fun login() {
-    Log.d(tag, "login")
-    IZettleSDK.user.login(activity)
   }
-
-  private fun loginWithToken(@NonNull token: String) {
-    Log.d(tag, "loginWithToken")
-    IZettleSDK.user.login(token)
-  }*/
 
   private fun requestPayment(@NonNull args: Map<*, *>) {
     Log.d(tag, "requestPayment: $args")
