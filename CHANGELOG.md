@@ -1,3 +1,7 @@
+## 0.2.7
+
+* Introduce session management with login/logout functionalities
+
 ## 0.2.6
 
 * Fix failing refund issue resulted from outdated RefundActivity intent builder implementation
