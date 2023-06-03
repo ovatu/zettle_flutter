@@ -323,6 +323,9 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
                       "status" to "failed",
               )
             }
+            else {
+
+            }
           }
 
           currentOp.flutterResult()
@@ -354,6 +357,9 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
               currentOp.response.message = mutableMapOf(
                       "status" to "failed",
               )
+            }
+            else {
+
             }
           }
 
