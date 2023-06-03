@@ -323,7 +323,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
                       "status" to "failed",
               )
             }
-            else {
+            else -> {
 
             }
           }
@@ -358,7 +358,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware, PluginRegis
                       "status" to "failed",
               )
             }
-            else {
+            else -> {
 
             }
           }
