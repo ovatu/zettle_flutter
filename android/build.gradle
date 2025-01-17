@@ -26,6 +26,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace = 'com.ovatu.zettle'
+    
     compileSdkVersion 31
 
     compileOptions {
