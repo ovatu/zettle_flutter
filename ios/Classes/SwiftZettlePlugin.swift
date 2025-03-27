@@ -42,6 +42,12 @@ public class SwiftZettlePlugin: NSObject, FlutterPlugin {
             pluginResponse.status = true
           pluginResponse.message = [:]
             result(pluginResponse.toDict())
+      case "showTippingSettings":
+        _showTippingSettings()
+
+            pluginResponse.status = true
+          pluginResponse.message = [:]
+            result(pluginResponse.toDict())
         default:
           pluginResponse.status = false
           pluginResponse.message = ["result": "Method not implemented"]
@@ -70,8 +76,15 @@ public class SwiftZettlePlugin: NSObject, FlutterPlugin {
         let enableTipping = (payment["enableTipping"] as? Bool) ?? true
         let reference = payment["reference"] as! String
         let amount = NSDecimalNumber(value: payment["amount"] as! Double)
-        
-        iZettleSDK.shared().charge(amount: amount, enableTipping: enableTipping, reference: reference, presentFrom: topController()) { payment, error in
+
+        var tippingConfiguration: IZSDKTippingConfiguration
+        if (enableTipping) {
+            tippingConfiguration = IZSDKTippingConfiguration(zettleReaderTippingStyle: IZZettleReaderTippingStyle.marketDefault, paypalReaderTippingStyle: IZPayPalReaderTippingStyle.sdkConfigured)
+        } else {
+            tippingConfiguration = IZSDKTippingConfiguration(zettleReaderTippingStyle: IZZettleReaderTippingStyle.none, paypalReaderTippingStyle: IZPayPalReaderTippingStyle.none)
+        }
+
+        iZettleSDK.shared().charge(amount: amount, tippingConfiguration: tippingConfiguration, reference: reference, presentFrom: topController()) { payment, error in
             
             if (error != nil) {
                 completion(false, [
@@ -132,6 +145,10 @@ public class SwiftZettlePlugin: NSObject, FlutterPlugin {
 
     func _showSettings() {
         iZettleSDK.shared().presentSettings(from: topController())
+    }
+
+    func _showTippingSettings() {
+        iZettleSDK.shared().presentSettings(from: topController(), configuration: IZSDKSettingsConfiguration(paypalReaderTippingSettingsEnabled: true))
     }
 }
 

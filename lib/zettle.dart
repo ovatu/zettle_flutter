@@ -75,4 +75,10 @@ class Zettle {
     _throwIfNotInitialized();
     _channel.invokeMethod('showSettings');
   }
+
+  /// Shows the tipping settings screen.
+  static void showTippingSettings() {
+    _throwIfNotInitialized();
+    _channel.invokeMethod('showTippingSettings');
+  }
 }

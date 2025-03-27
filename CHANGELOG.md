@@ -1,3 +1,7 @@
+## 0.3.0
+
+* SDK update
+
 ## 0.2.4
 
 * SDK update
