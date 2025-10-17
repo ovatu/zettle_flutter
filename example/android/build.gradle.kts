@@ -4,12 +4,12 @@ allprojects {
         mavenCentral()
         maven {
             url = uri("https://maven.pkg.github.com/iZettle/sdk-android")
-            credentials(HttpHeaderCredentials) {
-                name "Authorization"
-                value "Bearer <YOUR TOKEN HERE>"
+            credentials(HttpHeaderCredentials::class) {
+                name = "Authorization"
+                value = "Bearer <YOUR TOKEN HERE>"
             }
             authentication {
-                header(HttpHeaderAuthentication)
+                create<HttpHeaderAuthentication>("header")
             }
         }
     }
