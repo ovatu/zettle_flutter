@@ -12,6 +12,10 @@ buildscript {
     }
 }
 
+android {
+    namespace "com.ovatu.zettle"
+}
+
 allprojects {
     repositories {
         google()
@@ -37,6 +41,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register("clean", Delete) {
+    delete rootProject.layout.buildDirectory
 }
