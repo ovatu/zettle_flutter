@@ -97,6 +97,7 @@ public class SwiftZettlePlugin: NSObject, FlutterPlugin {
             } else {
                 completion(true, [
                     "status": "completed",
+                    "transactionId": payment!.transactionId,
                     "amount": payment!.amount,
                     "gratuityAmount": payment!.gratuityAmount,
                     "cardType": payment!.cardBrand,

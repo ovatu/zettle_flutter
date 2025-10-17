@@ -7,6 +7,7 @@ enum ZettlePluginPaymentStatus { completed, canceled, failed }
 class ZettlePluginPaymentResponse {
   ZettlePluginPaymentResponse(
       {required this.status,
+      this.transactionId,
       this.amount,
       this.gratuityAmount,
       this.cardType,
@@ -39,27 +40,29 @@ class ZettlePluginPaymentResponse {
         status = ZettlePluginPaymentStatus.failed;
     }
 
-    amount = response['amount'];
-    gratuityAmount = response['gratuityAmount'];
-    cardType = response['cardType'];
-    cardPaymentEntryMode = response['cardPaymentEntryMode'];
-    cardholderVerificationMethod = response['cardholderVerificationMethod'];
-    tsi = response['tsi'];
-    tvr = response['tvr'];
-    applicationIdentifier = response['applicationIdentifier'];
-    cardIssuingBank = response['cardIssuingBank'];
-    maskedPan = response['maskedPan'];
-    panHash = response['panHash'];
-    applicationName = response['applicationName'];
-    authorizationCode = response['authorizationCode'];
-    installmentAmount = response['installmentAmount'];
-    nrOfInstallments = response['nrOfInstallments'];
-    mxFiid = response['mxFiid'];
-    mxCardType = response['mxCardType'];
-    reference = response['reference'];
+    transactionId = response['transactionId']?.toString();
+    amount = double.tryParse(response['amount']?.toString() ?? '');
+    gratuityAmount = double.tryParse(response['gratuityAmount'];
+    cardType = response['cardType']?.toString();
+    cardPaymentEntryMode = response['cardPaymentEntryMode']?.toString();
+    cardholderVerificationMethod = response['cardholderVerificationMethod']?.toString();
+    tsi = response['tsi']?.toString();
+    tvr = response['tvr']?.toString();
+    applicationIdentifier = response['applicationIdentifier']?.toString();
+    cardIssuingBank = response['cardIssuingBank']?.toString();
+    maskedPan = response['maskedPan']?.toString();
+    panHash = response['panHash']?.toString();
+    applicationName = response['applicationName']?.toString();
+    authorizationCode = response['authorizationCode']?.toString();
+    installmentAmount = double.tryParse(response['installmentAmount']?.toString() ?? '');
+    nrOfInstallments = int.tryParse(response['nrOfInstallments']?.toString() ?? '');
+    mxFiid = response['mxFiid']?.toString();
+    mxCardType = response['mxCardType']?.toString();
+    reference = response['reference']?.toString();
   }
 
   late ZettlePluginPaymentStatus status;
+  late String? transactionId;
   late double? amount;
   late double? gratuityAmount;
   late String? cardType;
@@ -73,8 +76,8 @@ class ZettlePluginPaymentResponse {
   late String? panHash;
   late String? applicationName;
   late String? authorizationCode;
-  late String? installmentAmount;
-  late String? nrOfInstallments;
+  late double? installmentAmount;
+  late int? nrOfInstallments;
   late String? mxFiid;
   late String? mxCardType;
   late String? reference;

@@ -316,6 +316,7 @@ class ZettlePlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         )
 
         // Add all optional fields that might have changed in the SDK
+        payload.transactionId?.let { resultMap["transactionId"] = it }
         payload.tsi?.let { resultMap["tsi"] = it }
         payload.tvr?.let { resultMap["tvr"] = it }
         payload.applicationIdentifier?.let { resultMap["applicationIdentifier"] = it }

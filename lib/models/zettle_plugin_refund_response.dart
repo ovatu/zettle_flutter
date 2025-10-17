@@ -26,11 +26,11 @@ class ZettlePluginRefundResponse {
         status = ZettlePluginRefundStatus.failed;
     }
 
-    originalAmount = response['originalAmount'];
-    refundedAmount = response['refundedAmount'];
-    cardType = response['cardType'];
-    maskedPan = response['maskedPan'];
-    cardPaymentUUID = response['cardPaymentUUID'];
+    originalAmount = double.tryParse(response['originalAmount']?.toString() ?? '');
+    refundedAmount = double.tryParse(response['refundedAmount']?.toString() ?? '');
+    cardType = response['cardType']?.toString();
+    maskedPan = response['maskedPan']?.toString();
+    cardPaymentUUID = response['cardPaymentUUID']?.toString();
   }
 
   /// Transaction's outcome
