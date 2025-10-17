@@ -42,7 +42,7 @@ class ZettlePluginPaymentResponse {
 
     transactionId = response['transactionId']?.toString();
     amount = double.tryParse(response['amount']?.toString() ?? '');
-    gratuityAmount = double.tryParse(response['gratuityAmount'];
+    gratuityAmount = double.tryParse(response['gratuityAmount']?.toString() ?? '');
     cardType = response['cardType']?.toString();
     cardPaymentEntryMode = response['cardPaymentEntryMode']?.toString();
     cardholderVerificationMethod = response['cardholderVerificationMethod']?.toString();
